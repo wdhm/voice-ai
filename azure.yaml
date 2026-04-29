@@ -9,35 +9,35 @@ infra:
 
 hooks:
   preprovision:
-    shell: sh
+    shell: pwsh
     run: |
-      echo "Detecting your Azure AD object ID..."
-      AZURE_USER_OBJECT_ID=$(az ad signed-in-user show --query id -o tsv)
-      if [ -z "$AZURE_USER_OBJECT_ID" ]; then
-        echo "ERROR: Could not detect your Azure AD object ID. Run 'az login' first."
+      Write-Host "Detecting your Azure AD object ID..."
+      $objectId = az ad signed-in-user show --query id -o tsv
+      if (-not $objectId) {
+        Write-Error "Could not detect your Azure AD object ID. Run 'az login' first."
         exit 1
-      fi
-      echo "Object ID: $AZURE_USER_OBJECT_ID"
-      azd env set AZURE_USER_OBJECT_ID "$AZURE_USER_OBJECT_ID"
+      }
+      Write-Host "Object ID: $objectId"
+      azd env set AZURE_USER_OBJECT_ID $objectId
   postprovision:
-    shell: sh
+    shell: pwsh
     run: |
-      ENDPOINT=$(azd env get-value AZURE_VOICELIVE_ENDPOINT 2>/dev/null || echo "")
-      if [ -n "$ENDPOINT" ]; then
-        echo ""
-        echo "=========================================="
-        echo " Azure resources provisioned successfully!"
-        echo "=========================================="
-        echo ""
-        echo " Endpoint: $ENDPOINT"
-        echo ""
-        echo " To start the backend:"
-        echo "   cd backend/VoiceBot"
-        echo "   export AZURE_VOICELIVE_ENDPOINT=\"$ENDPOINT\""
-        echo "   dotnet run"
-        echo ""
-        echo " To start the frontend:"
-        echo "   cd frontend"
-        echo "   npm install && npm run dev"
-        echo ""
-      fi
+      $endpoint = azd env get-value AZURE_VOICELIVE_ENDPOINT 2>$null
+      if ($endpoint) {
+        Write-Host ""
+        Write-Host "=========================================="
+        Write-Host " Azure resources provisioned successfully!"
+        Write-Host "=========================================="
+        Write-Host ""
+        Write-Host " Endpoint: $endpoint"
+        Write-Host ""
+        Write-Host " To start the backend:"
+        Write-Host "   cd backend/VoiceBot"
+        Write-Host "   `$env:AZURE_VOICELIVE_ENDPOINT = `"$endpoint`""
+        Write-Host "   dotnet run"
+        Write-Host ""
+        Write-Host " To start the frontend:"
+        Write-Host "   cd frontend"
+        Write-Host "   npm install; npm run dev"
+        Write-Host ""
+      }
