@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Voice Assistant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="app">
+      <header class="top-bar">
+        <div class="logo">✈ <span>Voice Assistant</span></div>
+      </header>
+
+      <div class="content">
+        <main class="main">
+          <div class="status-area">
+            <div class="btn-row">
+              <button id="mic-btn" class="mic-btn" aria-label="Toggle microphone">
+                <svg class="mic-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="1" width="6" height="12" rx="3" />
+                  <path d="M19 10v1a7 7 0 0 1-14 0v-1" />
+                  <line x1="12" y1="19" x2="12" y2="23" />
+                  <line x1="8" y1="23" x2="16" y2="23" />
+                </svg>
+                <div class="pulse-ring"></div>
+              </button>
+              <button id="mute-btn" class="mute-btn" aria-label="Pause microphone" style="display:none">
+                <svg class="mute-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="6" y="4" width="4" height="16" rx="1" />
+                  <rect x="14" y="4" width="4" height="16" rx="1" />
+                </svg>
+              </button>
+            </div>
+            <p id="status-text" class="status-text">Click to start</p>
+          </div>
+
+          <div id="transcript" class="transcript"></div>
+        </main>
+
+        <aside id="booking-panel" class="booking-panel"></aside>
+      </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,24 @@
+# Build outputs
+backend/VoiceBot/bin/
+backend/VoiceBot/obj/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
+# Data persistence (generated at runtime)
+backend/VoiceBot/Data/bookings-state.json
+
+# IDE
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Azure Developer CLI
+.azure/

@@ -1,0 +1,43 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+name: voice-ai
+metadata:
+  template: voice-ai
+
+infra:
+  provider: bicep
+  path: infra
+
+hooks:
+  preprovision:
+    shell: sh
+    run: |
+      echo "Detecting your Azure AD object ID..."
+      AZURE_USER_OBJECT_ID=$(az ad signed-in-user show --query id -o tsv)
+      if [ -z "$AZURE_USER_OBJECT_ID" ]; then
+        echo "ERROR: Could not detect your Azure AD object ID. Run 'az login' first."
+        exit 1
+      fi
+      echo "Object ID: $AZURE_USER_OBJECT_ID"
+      azd env set AZURE_USER_OBJECT_ID "$AZURE_USER_OBJECT_ID"
+  postprovision:
+    shell: sh
+    run: |
+      ENDPOINT=$(azd env get-value AZURE_VOICELIVE_ENDPOINT 2>/dev/null || echo "")
+      if [ -n "$ENDPOINT" ]; then
+        echo ""
+        echo "=========================================="
+        echo " Azure resources provisioned successfully!"
+        echo "=========================================="
+        echo ""
+        echo " Endpoint: $ENDPOINT"
+        echo ""
+        echo " To start the backend:"
+        echo "   cd backend/VoiceBot"
+        echo "   export AZURE_VOICELIVE_ENDPOINT=\"$ENDPOINT\""
+        echo "   dotnet run"
+        echo ""
+        echo " To start the frontend:"
+        echo "   cd frontend"
+        echo "   npm install && npm run dev"
+        echo ""
+      fi
