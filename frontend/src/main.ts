@@ -9,6 +9,7 @@ const micBtn = document.getElementById('mic-btn')!;
 const muteBtn = document.getElementById('mute-btn')!;
 let active = false;
 let muted = false;
+let speaking = false;
 let audioHandler: ReturnType<typeof createAudioHandler> | null = null;
 let wsClient: ReturnType<typeof createWebSocketClient> | null = null;
 
@@ -36,6 +37,7 @@ micBtn.addEventListener('click', async () => {
     wsClient = createWebSocketClient({
       onAudio: (data) => {
         if (muted) return;
+        speaking = true;
         setMicState('speaking');
         updateStatus('Speaking...');
         audioHandler?.playAudio(data);
@@ -45,6 +47,7 @@ micBtn.addEventListener('click', async () => {
       onSessionReady: () => updateStatus('Connected — listening...'),
       onSpeechStarted: () => {
         finalizeBubble();
+        speaking = false;
         setMicState('listening');
         updateStatus('Listening...');
         audioHandler?.stopPlayback();
@@ -72,7 +75,7 @@ micBtn.addEventListener('click', async () => {
 
     await wsClient.connect();
     audioHandler.startCapture((audioData) => {
-      if (!muted) wsClient?.sendAudio(audioData);
+      if (!muted && !speaking) wsClient?.sendAudio(audioData);
     });
 
     active = true;
@@ -92,6 +95,7 @@ function stop() {
   wsClient = null;
   active = false;
   muted = false;
+  speaking = false;
   muteBtn.style.display = 'none';
   muteBtn.classList.remove('active');
   clearTranscript();

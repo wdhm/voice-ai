@@ -15,8 +15,8 @@ export function createAudioHandler() {
         audio: {
           sampleRate: SAMPLE_RATE,
           channelCount: CHANNELS,
-          echoCancellation: false, // server-side echo cancellation
-          noiseSuppression: false, // server-side noise suppression
+          echoCancellation: true,
+          noiseSuppression: true,
           autoGainControl: true,
         },
       });
